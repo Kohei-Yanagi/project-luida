@@ -1,0 +1,20 @@
+{
+    "name": "KaomoLab.CSCombiner.Editor",
+    "rootNamespace": "",
+    "references": [
+        "ClusterVR.CreatorKit.Item.Implements",
+        "KaomoLab.CSCombiner",
+        "ClusterVR.CreatorKit.Editor.EditorEvents"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

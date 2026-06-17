@@ -1,0 +1,493 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4731245737645068637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4731245737645068705}
+  - component: {fileID: 4731245737645068706}
+  - component: {fileID: 720097705929188119}
+  - component: {fileID: 7666113413222499611}
+  - component: {fileID: 4193501645939222088}
+  - component: {fileID: 2517667058289263438}
+  - component: {fileID: 4731245737645068704}
+  - component: {fileID: 4731245737645068636}
+  - component: {fileID: 4731245737645068707}
+  - component: {fileID: 4638770987403183712}
+  m_Layer: 0
+  m_Name: ConditionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4731245737645068705
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4731245737645068706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id:
+    value: 5570182165721890090
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!114 &720097705929188119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6487efbf7339493cb3e1fa581f53b763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7666113413222499611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f90a8458122ef47c3b840e286a75994a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 4731245737645068706}
+  triggers:
+  - target: 4
+    specifiedTargetItem: {fileID: 0}
+    key: exp_trialID
+    type: 3
+    value:
+      boolValue: 0
+      floatValue: 0
+      integerValue: 0
+      vector2Value: {x: 0, y: 0}
+      vector3Value: {x: 0, y: 0, z: 0}
+--- !u!114 &4193501645939222088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 2
+      key: exp_resetTrials
+    item: {fileID: 4731245737645068706}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_trialID
+          parameterType: 3
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &2517667058289263438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: exp_resetTrials
+    item: {fileID: 4731245737645068706}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_trialID
+          parameterType: 3
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 3
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &4731245737645068704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "const trialsCountForEachUniqueCondition = 1;\nconst within_subjects_variables
+    = [\n];\nconst between_subjects_variables = [\n];\nconst state_names = [];\n\r\nlet
+    isTestMode = true; // flipped to false by the pre-upload build step\r\n\r\n$.onStart(()
+    => {\r\n  $.state.isServerAssigned = false;\r\n  initializeBetweenSubjectsConditions();\r\n 
+    reset();\r\n\r\n  // Send between-subjects config to ParticipantManager for eligibility
+    checks\r\n  const pm = $.worldItemReference(\"ParticipantManager\");\r\n  if
+    (pm) {\r\n    let bsc = [];\r\n    try {\r\n      bsc = between_subjects_variables.map(v
+    => ({ name: v.name, values: v.values }));\r\n    } catch (e) { /* between_subjects_variables
+    not defined */ }\r\n    pm.send(\"betweenSubjectsConfig\", bsc);\r\n  }\r\n});\r\n\r\n$.onUpdate(()
+    => {\r\n  if (\r\n    $.state.trialID !== $.getStateCompat(\"global\", \"exp_trialID\",
+    \"integer\") &&\r\n      $.getStateCompat(\"global\", \"exp_trialID\", \"integer\")
+    >= 0\r\n  ) {\r\n    $.state.trialID = $.getStateCompat(\"global\", \"exp_trialID\",
+    \"integer\");\r\n    updateCondition();\r\n  }\r\n});\r\n\r\n$.onReceive((messageType,
+    arg, sender) => {\r\n  switch (messageType) {\r\n    case \"luida_existing_conditions\":\r\n     
+    // Receive existing conditions array from server, compute balanced assignment
+    locally\r\n      let assignedConditions = calculateBalancedAssignment(arg);\r\n     
+    // Debug overrides apply only in editor test mode \u2014 never on the uploaded
+    world,\r\n      // so a stray debugValue can't silently replace a server-balanced
+    condition.\r\n      if (isTestMode) {\r\n        try {\r\n          between_subjects_variables.forEach(v
+    => {\r\n            if (v.debugValue) {\r\n              assignedConditions[v.name]
+    = v.debugValue;\r\n            }\r\n          });\r\n        } catch (e) { /*
+    between_subjects_variables not defined */ }\r\n      }\r\n      $.state.betweenSubjectsConditions
+    = assignedConditions;\r\n      $.state.isServerAssigned = true;\r\n      $.groupState.currentCondition
+    = {\r\n        ...($.groupState.currentCondition || {}),\r\n        ...assignedConditions,\r\n     
+    };\r\n      $.log(\"Conditions balanced locally\" + (isTestMode ? \" (debug overrides
+    applied)\" : \"\") + \": \" + JSON.stringify(assignedConditions));\r\n      break;\r\n   
+    case \"luida_participants_info\":\r\n      $.groupState.participants = arg.participants;\r\n     
+    $.groupState.sessionID = arg.sessionID;\r\n      sender.send(\"betweenSubjectsCondition\",
+    $.state.betweenSubjectsConditions);\r\n      break;\r\n    default:\r\n     
+    break;\r\n  }\r\n});\r\n\r\nfunction updateCondition() {\r\n  if ($.state.trialID
+    >= $.state.trialCount) {\r\n    $.sendSignalCompat(\"this\", \"exp_resetTrials\");\r\n 
+    } else if ($.state.trialID <= -1) {\r\n    reset();\r\n  } else {\r\n    let
+    condition = { ...$.state.betweenSubjectsConditions };\r\n    for (let i = 0;
+    i < $.state.withinSubjectsVariableNames.length; i++) {\r\n      const varName
+    = $.state.withinSubjectsVariableNames[i];\r\n      const varValue =\r\n         
+    within_subjects_variables[i].values[\r\n              $.state.withinSubjectsConditionIndicesByTrial[$.state.trialID][i]\r\n             
+    ];\r\n      condition[varName] = varValue;\r\n    }\r\n    $.groupState.currentCondition
+    = condition;\r\n\r\n    // Check if this is the last trial (if true, stop repeating
+    trials when next state transition is triggered)\r\n    if (\r\n        $.state.trialCount
+    > 0 &&\r\n        !$.state.isLast &&\r\n        $.state.trialID >= $.state.trialCount
+    - 1\r\n    ) {\r\n      $.state.isLast = true;\r\n      $.sendSignalCompat(\"this\",
+    \"exp_readyToLeaveTrials\");\r\n    }\r\n  }\r\n}\r\n\r\nfunction reset() {\r\n 
+    $.state.trialID = 0;\r\n  if (!$.state.betweenSubjectsConditions)\r\n    $.state.betweenSubjectsConditions
+    = {};\r\n  $.state.withinSubjectsVariableNames = [];\r\n  $.state.withinSubjectsConditionIndicesByTrial
+    = [];\r\n  $.state.trialCount = 1;\r\n  $.groupState.currentCondition = {\r\n   
+    ...$.state.betweenSubjectsConditions,\r\n  };\r\n  $.groupState.stateNames =
+    state_names || [];\r\n  try {\r\n    initializeWithinSubjectsConditions(\r\n     
+    within_subjects_variables,\r\n      trialsCountForEachUniqueCondition\r\n   
+    );\r\n  } catch (error) {\r\n    $.log(error);\r\n    $.log(\"Within-subjects
+    variables are not defined.\");\r\n    initializeWithinSubjectsConditions([],
+    1);\r\n  }\r\n  updateCondition();\r\n}\r\n\r\nfunction initializeBetweenSubjectsConditions()
+    {\r\n  // Test mode only: debugValue if set, else a random candidate.\r\n  //
+    An uploaded world (not in test mode) assigns the conditions using calculateBalancedAssignment().\r\n 
+    let betweenSubjectsCondition = {};\r\n  if (isTestMode) {\r\n    const existing
+    = $.state.betweenSubjectsConditions || {};\r\n    try {\r\n      between_subjects_variables.forEach((v)
+    => {\r\n        if (v.debugValue) {\r\n          betweenSubjectsCondition[v.name]
+    = v.debugValue;\r\n        } else if (existing[v.name] !== undefined) {\r\n         
+    betweenSubjectsCondition[v.name] = existing[v.name];\r\n        } else if (v.values
+    && v.values.length > 0) {\r\n          betweenSubjectsCondition[v.name] =\r\n           
+    v.values[Math.floor(Math.random() * v.values.length)];\r\n        }\r\n     
+    });\r\n    } catch (e) {\r\n      $.log(\"Between-subjects variables are not
+    defined.\");\r\n    }\r\n  }\r\n  $.state.betweenSubjectsConditions = betweenSubjectsCondition;\r\n}\r\n\r\nfunction
+    initializeWithinSubjectsConditions(variables, repeatsPerCond = 1) {\r\n  variables
+    = [...variables.sort((a, b) => a.isRandom - b.isRandom)];\r\n  const varNames
+    = variables.map((v) => v.name);\r\n\r\n  let indicesPerVar = variables.map((v)
+    =>\r\n    Array.from({ length: v.values.length }, (_, i) => i)\r\n  );\r\n  let
+    condIndicesList = indicesPerVar\r\n    .reduce(\r\n      (acc, array) => {\r\n       
+    return acc.flatMap((accItem) =>\r\n          array.map((arrayItem) => [...accItem,
+    arrayItem])\r\n        );\r\n      },\r\n      [[]]\r\n    )\r\n    .flatMap((condIndices)
+    =>\r\n      Array.from({ length: repeatsPerCond }, () => condIndices)\r\n   
+    );\r\n\r\n  let shufflePartitionSize = 0;\r\n  for (let i = 0; i < variables.length;
+    i++) {\r\n    if (variables[i].isRandom) {\r\n      shufflePartitionSize =\r\n       
+    shufflePartitionSize === 0\r\n          ? variables[i].values.length\r\n         
+    : shufflePartitionSize * variables[i].values.length;\r\n    }\r\n  }\r\n  shufflePartitionSize
+    *= repeatsPerCond;\r\n\r\n  if (shufflePartitionSize > 0) {\r\n    const result
+    = [...condIndicesList]; // Copy the array to avoid mutating the original\r\n   
+    for (let i = 0; i < condIndicesList.length; i += shufflePartitionSize) {\r\n     
+    let partition = result.slice(i, i + shufflePartitionSize);\r\n      partition
+    = shuffleArray(partition);\r\n      result.splice(i, shufflePartitionSize, ...partition);\r\n   
+    }\r\n    condIndicesList = result;\r\n  }\r\n\r\n  $.state.withinSubjectsVariableNames
+    = varNames;\r\n  $.state.withinSubjectsConditionIndicesByTrial = condIndicesList;\r\n 
+    $.state.trialCount = condIndicesList.length;\r\n}\r\n\r\nfunction shuffleArray(array)
+    {\r\n  for (let i = array.length - 1; i > 0; i--) {\r\n    const j = Math.floor(Math.random()
+    * (i + 1));\r\n    [array[i], array[j]] = [array[j], array[i]];\r\n  }\r\n  return
+    array;\r\n}\r\n\r\n/**\r\n * Generate Cartesian product of all between-subjects
+    variable values.\r\n * Returns array of combination objects, e.g. [{avatar:\"robot\",difficulty:\"easy\"},
+    ...]\r\n */\r\nfunction generateAllCombinations(variables) {\r\n  if (variables.length
+    === 0) return [{}];\r\n  const first = variables[0];\r\n  const rest = variables.slice(1);\r\n 
+    const restCombinations = generateAllCombinations(rest);\r\n  const combinations
+    = [];\r\n  for (const value of first.values) {\r\n    for (const combo of restCombinations)
+    {\r\n      const newCombo = {};\r\n      newCombo[first.name] = value;\r\n     
+    for (const k in combo) { newCombo[k] = combo[k]; }\r\n      combinations.push(newCombo);\r\n   
+    }\r\n  }\r\n  return combinations;\r\n}\r\n\r\n/**\r\n * Given an array of existing
+    condition objects (from previous sessions),\r\n * find the least-used combination
+    and return it.\r\n * Ties are broken randomly.\r\n */\r\nfunction calculateBalancedAssignment(existingConditions)
+    {\r\n  let variables = [];\r\n  try {\r\n    variables = between_subjects_variables.map(v
+    => ({ name: v.name, values: v.values }));\r\n  } catch (e) {\r\n    return {};\r\n 
+    }\r\n  if (variables.length === 0) return {};\r\n\r\n  const allCombinations
+    = generateAllCombinations(variables);\r\n\r\n  // Build a count for each combination
+    using a stable string key\r\n  const counts = {};\r\n  for (const combo of allCombinations)
+    {\r\n    const key = JSON.stringify(combo, Object.keys(combo).sort());\r\n   
+    counts[key] = 0;\r\n  }\r\n\r\n  // Count occurrences in existing conditions\r\n 
+    for (const cond of existingConditions) {\r\n    if (cond && typeof cond === \"object\")
+    {\r\n      // Normalize to same key format\r\n      const normalized = {};\r\n     
+    for (const combo of allCombinations) {\r\n        for (const k of Object.keys(combo))
+    {\r\n          if (cond[k] !== undefined) normalized[k] = \"\" + cond[k];\r\n       
+    }\r\n        break; // just need the key names from the first combo\r\n     
+    }\r\n      const key = JSON.stringify(normalized, Object.keys(normalized).sort());\r\n     
+    if (key in counts) {\r\n        counts[key]++;\r\n      }\r\n    }\r\n  }\r\n\r\n 
+    // Find minimum count\r\n  let minCount = Infinity;\r\n  for (const key in counts)
+    {\r\n    if (counts[key] < minCount) minCount = counts[key];\r\n  }\r\n\r\n 
+    // Collect all combinations with minimum count\r\n  const leastUsed = allCombinations.filter(combo
+    => {\r\n    const key = JSON.stringify(combo, Object.keys(combo).sort());\r\n   
+    return counts[key] === minCount;\r\n  });\r\n\r\n  // Random tie-break\r\n  return
+    leastUsed[Math.floor(Math.random() * leastUsed.length)];\r\n}\r\n"
+--- !u!114 &4731245737645068636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 2
+      key: exp_toNextCondition
+    item: {fileID: 0}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_trialID
+          parameterType: 3
+        expression:
+          type: 1
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 0
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 2
+            operands:
+            - type: 0
+              value:
+                type: 1
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: exp_trialID
+                  type: 3
+              operatorExpression:
+                operator: 0
+                operands: []
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 3
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 1
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &4731245737645068707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67bdc2960f9462385a7fba1c0052836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGimmickKey:
+    key:
+      target: 0
+      key: exp_readyToLeaveTrials
+    item: {fileID: 4731245737645068706}
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 2
+          key: exp_readyToLeaveTrials
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 2
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 2
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &4638770987403183712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731245737645068637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: b87332eb7be8909439b64cc0b2e914f3, type: 3}
+  - {fileID: 5022602860645237092, guid: 8821fb654779949b38c61e01b3dae4b5, type: 3}
+  playerScripts: []
+  clusterScriptMD5s: []
+  playerScriptMD5s: []

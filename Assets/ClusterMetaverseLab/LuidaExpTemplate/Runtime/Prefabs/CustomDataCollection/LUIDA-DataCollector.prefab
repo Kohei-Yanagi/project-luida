@@ -1,0 +1,362 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5964733846762761523
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5964733846762761524}
+  - component: {fileID: 5964733846762761527}
+  - component: {fileID: 5964733846762761526}
+  - component: {fileID: 4976748577095326931}
+  - component: {fileID: 5964733846762761520}
+  - component: {fileID: 5964733846762761525}
+  - component: {fileID: 2627616726396763139}
+  - component: {fileID: 8273925800708392170}
+  - component: {fileID: 8901108051797212556}
+  m_Layer: 0
+  m_Name: LUIDA-DataCollector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5964733846762761524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5964733846762761527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3977a5e65e72f4db4b85ddba10d48dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id:
+    value: 0
+  itemName: 
+  size: {x: 0, y: 0, z: 0}
+--- !u!114 &5964733846762761526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61061896c654489a41575fc291bf4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceCodeAsset: {fileID: 0}
+  sourceCode: "expID = \"expID_example\";\ntoken = \"token_example\";\ncallExternalEndpointID
+    = \"callExternalEndpointID_example\";\npNum = 1;\nisTestMode = true;\n\r\nconst
+    uploadInterval = 1;\nconst dataLengthPerUpload = 100;\nconst dataByteLengthPerUpload
+    = 100000; // 102400\n\n$.onStart(() => {\n    $.state.customData = [];\n    $.state.uploadIndex
+    = 0;\n    $.state.elapsedTime = 0;\n    // $.state.dataLength = 0;\n    $.state.steps
+    = 0;\n    $.state.isUploading = false;\n})\n\n$.onUpdate((deltaTime) => {\n   
+    if ($.getStateCompat(\"this\", \"exp_recordCustomData\", \"boolean\")) {\n       
+    $.setStateCompat(\"this\", \"exp_recordCustomData\", false);\n        recordData();\n   
+    }\n    if ($.getStateCompat(\"this\", \"exp_uploadCustomData\", \"boolean\"))
+    {\n        if ($.state.uploadIndex === 0) {\n            uploadDataInit();\n           
+    $.setStateCompat(\"this\", \"exp_uploadCustomData\", false);\n        }\n   
+    }\n    if ($.state.isUploading) {\n        $.state.elapsedTime = $.state.elapsedTime
+    + deltaTime;\n        if ($.state.elapsedTime >= uploadInterval && $.state.uploadIndex
+    < $.state.steps) {\n            $.state.elapsedTime = 0;\n            uploadDataStep();\n       
+    }\n    }\n})\n\n$.onExternalCallEnd((res, meta, err) =>\n{\n    if (res == null)
+    {\n        $.log(\"callExternal ERROR: \" + err);\n        return;\n    }\n\n   
+    if (meta === \"customDataUploaded\") {\n        $.log(\"Response after customDataUploaded
+    called: \" + JSON.stringify(res));\n    }\n});\n\nfunction recordData () {\n   
+    $.state.customData = calculateData();\n}\n\nfunction uploadDataInit() {\n   
+    $.state.uploadIndex = 0;\n    $.state.elapsedTime = 0;\n    $.state.isUploading
+    = true;\n\n    let dataByteLength = utf8ByteLength(JSON.stringify($.state.customData));\n   
+    $.log(\"Data byte length: \" + dataByteLength);\n    $.state.steps = Math.ceil(dataByteLength
+    / dataByteLengthPerUpload);\n}\n\nfunction uploadDataStep() {\n    $.log(\"Upload
+    data step: \" + $.state.uploadIndex);\n    if ($.state.uploadIndex < $.state.steps)
+    {\n        let request = {\n            type: \"uploadCustomData\",\n           
+    token: token || \"\",\n            data: { data: $.state.customData.slice($.state.uploadIndex
+    * dataLengthPerUpload, ($.state.uploadIndex + 1) * dataLengthPerUpload) },\n           
+    eID: expID || \"\",\n            sID: $.groupState.sessionID || \"\"\n       
+    };\n        $.log(JSON.stringify(request));\n        $.callExternal(\n           
+    new ExternalEndpointId(callExternalEndpointID),\n            JSON.stringify(request),\n           
+    \"customDataUploaded\");\n        $.state.uploadIndex = $.state.uploadIndex +
+    1;\n\n        if ($.state.uploadIndex >= $.state.steps) {\n            $.state.uploadIndex
+    = 0;\n            $.state.isUploading = false;\n            $.state.customData
+    = [];\n        }\n    }\n}\n\nfunction utf8ByteLength(str) {\n    let bytes =
+    0;\n    for (let i = 0; i < str.length; i++) {\n        const code = str.charCodeAt(i);\n\n       
+    if (code <= 0x7F)                      bytes += 1; // U+0000 \u2013 U+007F\n       
+    else if (code <= 0x7FF)                bytes += 2; // U+0080 \u2013 U+07FF\n       
+    else if (code >= 0xD800 && code <= 0xDBFF) {\n            // Surrogate pair (astral
+    plane)\n            bytes += 4;                          // Whole pair is 4 bytes\n           
+    i++;                                 // Skip the next surrogate\n        }\n       
+    else                                   bytes += 3; // U+0800 \u2013 U+FFFF\n   
+    }\n    return bytes;\n}\n\nfunction calculateData () {\n    let returnData =
+    $.state.customData;\n    if (!Array.isArray(returnData)) returnData = [];\n   
+    const CONDITION = $.groupState.currentCondition;\n    const PARTICIPANTS = [null].concat($.groupState.participants);\n   
+    const COLLECTED_DATA = $.groupState.collectedData;\n    function saveData() {\n\r\n/*\n#
+    Available Variables in LUIDA Data Collector Script\n\nThe script for LUIDA Data
+    Collector is primarily to be written using ClusterScript (https://docs.cluster.mu/script/index.html).\n\nWe
+    also provide the following variables that work with LUIDA-only features.\n\nTip:
+    When asking an LLM service for coding assistance, first share the `Asset/Doc/CCK-Types.d.ts`
+    file and this comment section with it.\n\n### CONDITION\n    - Only available
+    if **LUIDA experiment progress automation feature is enabled and during the trial
+    states** (e.g., `Trial - Start`, `Trial - Rest`).\n    - Contains values from
+    your configured experimental variables for the current trial.\n    - Use `CONDITION[\"your_variable_name\"]`
+    to retrieve a specific condition value within the current trial.\n\n### PARTICIPANTS\n   
+    - An array of PlayerHandle of the participants joining this experiment.\"\n   
+    - Use `PARTICIPANTS[1]` to retrieve the first participant, `PARTICIPANTS[2]`
+    to retrieve the second participant, etc.\n\n### COLLECTED_DATA\n    - Contains
+    data that are sent from state-listening items' `Send Data To Collector` action
+    or a customized action script's `SendDataToCollector(\"your_data_label\", your_data_value)`
+    function.\n    - Use `COLLECTED_DATA[\"your_data_label\"]` to retrieve specific
+    values.\n\n---\n\n**Important Note:** The script **must return a value** at the
+    end of its code block.\n\nExamples:\n    - return { score: 100 };`\n    - const
+    answer = $.getStateCompat('global', 'count', 'integer') > 5; return { isLarger:
+    answer };`\n*/\nreturn {\n    stateLog: COLLECTED_DATA ? COLLECTED_DATA[\"stateLog\"]
+    : \"\", // Include log of the current state by default (state name, id, and the
+    timestamp when the state starts)\n    cond: CONDITION || {}, // Include conditions
+    in the collected data by default (if you have enabled the experiment automation
+    feature)\n    someCckState: $.getStateCompat(\"global\", \"someCckState\", \"boolean\"),
+    // Replace with your in-scene state triggered by CCK components\n    foo: 'bar'
+    // Replace with your custom collected data\n};\n\r\n    return {};\n  }\n  returnData.push(saveData());\n 
+    return returnData;\n}\n"
+--- !u!114 &4976748577095326931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 5964733846762761527}
+  key:
+    target: 2
+    key: exp_conditionChanged
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 0
+          key: exp_conditionChanged
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &5964733846762761520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 5964733846762761527}
+  key:
+    target: 2
+    key: exp_recordCustomData
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 0
+          key: exp_recordCustomData
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &5964733846762761525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06d8dc2ce9e442ab2712de694945b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 5964733846762761527}
+  key:
+    target: 2
+    key: exp_uploadCustomData
+  logic:
+    statements:
+    - singleStatement:
+        targetState:
+          target: 0
+          key: exp_uploadCustomData
+          parameterType: 1
+        expression:
+          type: 0
+          value:
+            type: 0
+            constant:
+              type: 1
+              boolValue: 1
+              floatValue: 0
+              integerValue: 0
+              vector2Value: {x: 0, y: 0}
+              vector3Value: {x: 0, y: 0, z: 0}
+            sourceState:
+              target: 0
+              key: 
+              type: 6
+          operatorExpression:
+            operator: 0
+            operands:
+            - type: 0
+              value:
+                type: 0
+                constant:
+                  type: 1
+                  boolValue: 0
+                  floatValue: 0
+                  integerValue: 0
+                  vector2Value: {x: 0, y: 0}
+                  vector3Value: {x: 0, y: 0, z: 0}
+                sourceState:
+                  target: 0
+                  key: 
+                  type: 6
+              operatorExpression:
+                operator: 0
+                operands: []
+--- !u!114 &2627616726396763139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466c56cb3cb32ec48b21ffb81ad21213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clusterScripts:
+  - {fileID: 5022602860645237092, guid: c22e594b3eff3364c8217424a55e9588, type: 3}
+  - {fileID: 5022602860645237092, guid: 6d6042ff7a79fd24c942dcff94c71d21, type: 3}
+  - {fileID: 5022602860645237092, guid: 0e30668acbd4ec042ba0b9b264c2453e, type: 3}
+  - {fileID: 5022602860645237092, guid: 12331039baa6422dadb606b41c689c71, type: 3}
+  playerScripts: []
+  clusterScriptMD5s: []
+  playerScriptMD5s: []
+--- !u!114 &8273925800708392170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b331e57100a4127901fa699e619e234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  host: {fileID: 0}
+--- !u!114 &8901108051797212556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5964733846762761523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b83b38d61e594e9a94383939b963187, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  calculationScript: {fileID: 5022602860645237092, guid: 7527d2d71b242614a8d9f7e1b0bec398,
+    type: 3}
