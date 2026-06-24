@@ -123,79 +123,82 @@ MonoBehaviour:
     [HumanoidBone.LeftUpperLeg]: HumanoidBone.Hips,\r\n  [HumanoidBone.LeftLowerLeg]:
     HumanoidBone.LeftUpperLeg,\r\n  [HumanoidBone.RightUpperLeg]: HumanoidBone.Hips,\r\n 
     [HumanoidBone.RightLowerLeg]: HumanoidBone.RightUpperLeg,\r\n};\r\n\r\n// =====
-    LUIDA Avatar Sync Clone =====\n// Attached to each spawned avatar wrapper item.\n//
-    Reads BONE_MAP and BONE_PARENT from the prepended per-avatar BoneMap header.\n//
-    Syncs the assigned player's humanoid pose to this item's sub-nodes every frame.\n\nlet
-    boneNodes = [];\nlet hipsNode = null;\nlet headNode = null;\n\n$.onStart(() =>
-    {\n  $.state.player = null;\n  $.state.needsScale = false;\n  $.state.scaled
-    = false;\n  $.state.poseWaitTime = 0;\n  $.state.warnedNoPose = false;\n\n  //
-    Cache bone sub-node references using the baked-in BONE_MAP\n  boneNodes = [];\n 
-    for (let i = 0; i < BONE_MAP.length; i++) {\n    const entry = BONE_MAP[i];\n   
-    const node = $.subNode(entry.name);\n    if (!node) continue;\n    const parentBone
-    = BONE_PARENT[entry.bone] !== undefined ? BONE_PARENT[entry.bone] : null;\n   
-    boneNodes.push({ bone: entry.bone, node: node, parentBone: parentBone });\n   
-    if (entry.bone === HumanoidBone.Hips) hipsNode = node;\n    if (entry.bone ===
-    HumanoidBone.Head) headNode = node;\n  }\n});\n\n// --- Receive messages from
-    AvatarManager ---\n$.onReceive((messageType, arg, sender) => {\n  if (messageType
-    === \"assignPlayer\") {\n    $.state.player = arg.player;\n    $.requestOwner(arg.player);\n 
-    }\n\n  if (messageType === \"unassign\") {\n    $.state.player = null;\n    $.destroy();\n 
-    }\n\n  if (messageType === \"unassignIfPlayer\") {\n    if ($.state.player &&
-    $.state.player.id === arg) {\n      $.state.player = null;\n      $.destroy();\n   
-    }\n  }\n});\n\n// --- Quaternion math helpers ---\nfunction rotateVector(q, x,
-    y, z) {\n  const qx = q.x, qy = q.y, qz = q.z, qw = q.w;\n  const tx = 2 * (qy
-    * z - qz * y);\n  const ty = 2 * (qz * x - qx * z);\n  const tz = 2 * (qx * y
-    - qy * x);\n  return new Vector3(\n    x + qw * tx + (qy * tz - qz * ty),\n   
-    y + qw * ty + (qz * tx - qx * tz),\n    z + qw * tz + (qx * ty - qy * tx)\n 
-    );\n}\n\nfunction multiplyQuaternions(q1, q2) {\n  return new Quaternion(\n   
-    q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,\n    q1.w * q2.y - q1.x
-    * q2.z + q1.y * q2.w + q1.z * q2.x,\n    q1.w * q2.z + q1.x * q2.y - q1.y * q2.x
-    + q1.z * q2.w,\n    q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z\n 
-    );\n}\n\n// --- Per-frame sync ---\n$.onUpdate((deltaTime) => {\n  const player
-    = $.state.player;\n  if (!player || !player.exists()) return;\n\n  // Diagnostic:
-    if pose data is still null 3s after the wrapper got its player,\n  // log once.
-    Helps surface the rare \"AvatarManager timed out and spawned the\n  // wrapper
-    anyway, but pose data never arrived\" case to the experimenter.\n  // Behavior
-    unchanged \u2014 the existing `if (!boneRot) continue;` skip handles\n  // the
-    actual sync.\n  const hipsRotProbe = player.getHumanoidBoneRotation(HumanoidBone.Hips);\n 
-    if (!hipsRotProbe) {\n    $.state.poseWaitTime += deltaTime;\n    if (!$.state.warnedNoPose
-    && $.state.poseWaitTime > 3) {\n      $.log(\"[AvatarSyncClone] Player pose still
-    null after 3s \u2014 avatar may stay in T-pose\");\n      $.state.warnedNoPose
-    = true;\n    }\n  } else if ($.state.warnedNoPose) {\n    $.log(\"[AvatarSyncClone]
-    Pose data now available; sync resuming\");\n    $.state.warnedNoPose = false;\n 
-    }\n\n  // Sync root position and rotation from player\n  const pos = player.getPosition();\n 
-    const rot = player.getRotation();\n  if (pos) $.setPosition(pos);\n  if (rot)
-    $.setRotation(rot);\n\n  // Sync Hips position (local space relative to root)
-    \u2014 before scaling so offset affects head height\n  if (hipsNode && pos &&
-    rot) {\n    const hipsWorldPos = player.getHumanoidBonePosition(HumanoidBone.Hips);\n   
-    if (hipsWorldPos) {\n      const dx = hipsWorldPos.x - pos.x;\n      const dy
-    = hipsWorldPos.y - pos.y;\n      const dz = hipsWorldPos.z - pos.z;\n      const
-    invRot = new Quaternion(-rot.x, -rot.y, -rot.z, rot.w);\n      const hipsLocalPos
-    = rotateVector(invRot, dx, dy, dz);\n\n      const finalX = hipsLocalPos.x;\n     
-    const finalZ = hipsLocalPos.z;\n\n      // Sync hips Y when enabled, otherwise
-    use the baked offset\n      const finalY = AVATAR_SYNC_HIPS_Y ? hipsLocalPos.y
-    : AVATAR_HIPS_Y_OFFSET;\n\n      hipsNode.setPosition(new Vector3(finalX, finalY,
-    finalZ));\n    }\n  }\n\n  // --- Scaling: compare head heights after hips offset
-    is applied ---\n  // Frame 1: sync pose + hips, flag needsScale. Frame 2: compare
-    head heights, apply scale.\n  if (!$.state.scaled) {\n    if ($.state.needsScale
-    && headNode) {\n      const playerHeadPos = player.getHumanoidBonePosition(HumanoidBone.Head);\n     
-    const avatarHeadPos = headNode.getGlobalPosition();\n      if (playerHeadPos
-    && avatarHeadPos && pos) {\n        const playerHeadH = playerHeadPos.y - pos.y;\n       
-    const avatarHeadH = avatarHeadPos.y - pos.y;\n        if (avatarHeadH > 0.01
-    && playerHeadH > 0.01) {\n          const s = playerHeadH / avatarHeadH;\n         
-    const transform = $.getUnityComponent(\"Transform\");\n          transform.unityProp.localScale
-    = new Vector3(s, s, s);\n          $.state.scaled = true;\n        }\n      }\n   
-    } else {\n      $.state.needsScale = true;\n    }\n  }\n\n  // Sync all bone
-    rotations (world -> local via inverse parent)\n  const worldRots = {};\n  for
-    (let i = 0; i < boneNodes.length; i++) {\n    const entry = boneNodes[i];\n   
-    const boneRot = player.getHumanoidBoneRotation(entry.bone);\n    if (!boneRot)
-    continue;\n    worldRots[entry.bone] = boneRot;\n\n    if (!entry.node) continue;\n\n   
-    // Determine parent world rotation\n    let parentWorldRot;\n    if (entry.parentBone
-    === null) {\n      parentWorldRot = rot;\n    } else {\n      parentWorldRot
-    = worldRots[entry.parentBone];\n      if (!parentWorldRot) parentWorldRot = rot;\n   
-    }\n\n    // Convert world rotation to local: localRot = inverse(parentWorldRot)
-    * boneRot\n    const invParent = new Quaternion(-parentWorldRot.x, -parentWorldRot.y,
-    -parentWorldRot.z, parentWorldRot.w);\n    const localBoneRot = multiplyQuaternions(invParent,
-    boneRot);\n\n    entry.node.setRotation(localBoneRot);\n  }\n});\n"
+    LUIDA Avatar Sync Clone =====\r\n// Attached to each spawned avatar wrapper item.\r\n//
+    Reads BONE_MAP and BONE_PARENT from the prepended per-avatar BoneMap header.\r\n//
+    Syncs the assigned player's humanoid pose to this item's sub-nodes every frame.\r\n\r\nlet
+    boneNodes = [];\r\nlet hipsNode = null;\r\nlet headNode = null;\r\n\r\n$.onStart(()
+    => {\r\n  $.state.player = null;\r\n  $.state.needsScale = false;\r\n  $.state.scaled
+    = false;\r\n  $.state.poseWaitTime = 0;\r\n  $.state.warnedNoPose = false;\r\n\r\n 
+    // Cache bone sub-node references using the baked-in BONE_MAP\r\n  boneNodes
+    = [];\r\n  for (let i = 0; i < BONE_MAP.length; i++) {\r\n    const entry = BONE_MAP[i];\r\n   
+    const node = $.subNode(entry.name);\r\n    if (!node) continue;\r\n    const
+    parentBone = BONE_PARENT[entry.bone] !== undefined ? BONE_PARENT[entry.bone]
+    : null;\r\n    boneNodes.push({ bone: entry.bone, node: node, parentBone: parentBone
+    });\r\n    if (entry.bone === HumanoidBone.Hips) hipsNode = node;\r\n    if (entry.bone
+    === HumanoidBone.Head) headNode = node;\r\n  }\r\n});\r\n\r\n// --- Receive messages
+    from AvatarManager ---\r\n$.onReceive((messageType, arg, sender) => {\r\n  if
+    (messageType === \"assignPlayer\") {\r\n    $.state.player = arg.player;\r\n   
+    $.requestOwner(arg.player);\r\n  }\r\n\r\n  if (messageType === \"unassign\")
+    {\r\n    $.state.player = null;\r\n    $.destroy();\r\n  }\r\n\r\n  if (messageType
+    === \"unassignIfPlayer\") {\r\n    if ($.state.player && $.state.player.id ===
+    arg) {\r\n      $.state.player = null;\r\n      $.destroy();\r\n    }\r\n  }\r\n});\r\n\r\n//
+    --- Quaternion math helpers ---\r\nfunction rotateVector(q, x, y, z) {\r\n  const
+    qx = q.x, qy = q.y, qz = q.z, qw = q.w;\r\n  const tx = 2 * (qy * z - qz * y);\r\n 
+    const ty = 2 * (qz * x - qx * z);\r\n  const tz = 2 * (qx * y - qy * x);\r\n 
+    return new Vector3(\r\n    x + qw * tx + (qy * tz - qz * ty),\r\n    y + qw *
+    ty + (qz * tx - qx * tz),\r\n    z + qw * tz + (qx * ty - qy * tx)\r\n  );\r\n}\r\n\r\nfunction
+    multiplyQuaternions(q1, q2) {\r\n  return new Quaternion(\r\n    q1.w * q2.x
+    + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,\r\n    q1.w * q2.y - q1.x * q2.z +
+    q1.y * q2.w + q1.z * q2.x,\r\n    q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z
+    * q2.w,\r\n    q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z\r\n  );\r\n}\r\n\r\n//
+    --- Per-frame sync ---\r\n$.onUpdate((deltaTime) => {\r\n  const player = $.state.player;\r\n 
+    if (!player || !player.exists()) return;\r\n\r\n  // Diagnostic: if pose data
+    is still null 3s after the wrapper got its player,\r\n  // log once. Helps surface
+    the rare \"AvatarManager timed out and spawned the\r\n  // wrapper anyway, but
+    pose data never arrived\" case to the experimenter.\r\n  // Behavior unchanged
+    \u2014 the existing `if (!boneRot) continue;` skip handles\r\n  // the actual
+    sync.\r\n  const hipsRotProbe = player.getHumanoidBoneRotation(HumanoidBone.Hips);\r\n 
+    if (!hipsRotProbe) {\r\n    $.state.poseWaitTime += deltaTime;\r\n    if (!$.state.warnedNoPose
+    && $.state.poseWaitTime > 3) {\r\n      $.log(\"[AvatarSyncClone] Player pose
+    still null after 3s \u2014 avatar may stay in T-pose\");\r\n      $.state.warnedNoPose
+    = true;\r\n    }\r\n  } else if ($.state.warnedNoPose) {\r\n    $.log(\"[AvatarSyncClone]
+    Pose data now available; sync resuming\");\r\n    $.state.warnedNoPose = false;\r\n 
+    }\r\n\r\n  // Sync root position and rotation from player\r\n  const pos = player.getPosition();\r\n 
+    const rot = player.getRotation();\r\n  if (pos) $.setPosition(pos);\r\n  if (rot)
+    $.setRotation(rot);\r\n\r\n  // Sync Hips position (local space relative to root)
+    \u2014 before scaling so offset affects head height\r\n  if (hipsNode && pos
+    && rot) {\r\n    const hipsWorldPos = player.getHumanoidBonePosition(HumanoidBone.Hips);\r\n   
+    if (hipsWorldPos) {\r\n      const dx = hipsWorldPos.x - pos.x;\r\n      const
+    dy = hipsWorldPos.y - pos.y;\r\n      const dz = hipsWorldPos.z - pos.z;\r\n     
+    const invRot = new Quaternion(-rot.x, -rot.y, -rot.z, rot.w);\r\n      const
+    hipsLocalPos = rotateVector(invRot, dx, dy, dz);\r\n\r\n      const finalX =
+    hipsLocalPos.x;\r\n      const finalZ = hipsLocalPos.z;\r\n\r\n      // Sync
+    hips Y when enabled, otherwise use the baked offset\r\n      const finalY = AVATAR_SYNC_HIPS_Y
+    ? hipsLocalPos.y : AVATAR_HIPS_Y_OFFSET;\r\n\r\n      hipsNode.setPosition(new
+    Vector3(finalX, finalY, finalZ));\r\n    }\r\n  }\r\n\r\n  // --- Scaling: compare
+    head heights after hips offset is applied ---\r\n  // Frame 1: sync pose + hips,
+    flag needsScale. Frame 2: compare head heights, apply scale.\r\n  if (!$.state.scaled)
+    {\r\n    if ($.state.needsScale && headNode) {\r\n      const playerHeadPos =
+    player.getHumanoidBonePosition(HumanoidBone.Head);\r\n      const avatarHeadPos
+    = headNode.getGlobalPosition();\r\n      if (playerHeadPos && avatarHeadPos &&
+    pos) {\r\n        const playerHeadH = playerHeadPos.y - pos.y;\r\n        const
+    avatarHeadH = avatarHeadPos.y - pos.y;\r\n        if (avatarHeadH > 0.01 && playerHeadH
+    > 0.01) {\r\n          const s = playerHeadH / avatarHeadH;\r\n          const
+    transform = $.getUnityComponent(\"Transform\");\r\n          transform.unityProp.localScale
+    = new Vector3(s, s, s);\r\n          $.state.scaled = true;\r\n        }\r\n     
+    }\r\n    } else {\r\n      $.state.needsScale = true;\r\n    }\r\n  }\r\n\r\n 
+    // Sync all bone rotations (world -> local via inverse parent)\r\n  const worldRots
+    = {};\r\n  for (let i = 0; i < boneNodes.length; i++) {\r\n    const entry =
+    boneNodes[i];\r\n    const boneRot = player.getHumanoidBoneRotation(entry.bone);\r\n   
+    if (!boneRot) continue;\r\n    worldRots[entry.bone] = boneRot;\r\n\r\n    if
+    (!entry.node) continue;\r\n\r\n    // Determine parent world rotation\r\n   
+    let parentWorldRot;\r\n    if (entry.parentBone === null) {\r\n      parentWorldRot
+    = rot;\r\n    } else {\r\n      parentWorldRot = worldRots[entry.parentBone];\r\n     
+    if (!parentWorldRot) parentWorldRot = rot;\r\n    }\r\n\r\n    // Convert world
+    rotation to local: localRot = inverse(parentWorldRot) * boneRot\r\n    const
+    invParent = new Quaternion(-parentWorldRot.x, -parentWorldRot.y, -parentWorldRot.z,
+    parentWorldRot.w);\r\n    const localBoneRot = multiplyQuaternions(invParent,
+    boneRot);\r\n\r\n    entry.node.setRotation(localBoneRot);\r\n  }\r\n});\r\n"
 --- !u!114 &289073345127705743
 MonoBehaviour:
   m_ObjectHideFlags: 0
